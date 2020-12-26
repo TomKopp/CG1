@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Bauanleitung in GNU/Linux-Systemen</title>
+
+<style type="text/css">
+<!--
+	body {
+		font-family: sans-serif;
+	}
+	
+	.command {
+		background-color:black;
+		border:1px dashed white;
+		color:white;
+		padding:5px;
+        width:700px;
+		
+		
+	}
+-->
+</style>
+</head>
+<body>
+
+<h1>Bauanleitung für GNU/Linux-Systeme</h1>
+
+Die Übungsaufgaben verwenden das CGV-Framework. In dieser Anleitung wird
+zunächst das Framework aus den Sourcen kompiliert und anschließend eine Aufgabe kompiliert und gestartet.
+
+<h2>Bauen des CGV-Frameworks</h2>
+Folgende Pakete sind notwendig:
+<ul>
+	<li>g++ zum Kompilieren (das Paket heißt vermutlich &quot;g++&quot;. Unter Ubuntu ist es üblicher das Paket &quot;build-essential&quot; zu installieren)</li>
+	<li>cmake ab Version 2.8.8. Dabei handelt es sich um ein Meta-Build-System, das selbst Projektdateien erzeugt. Welche Version installiert wurde kann mit dem Kommando
+		<pre class="command">cmake --version</pre> überprüft werden. 
+		Falls die Version nicht ausreicht, kann auf www.cmake.org eine aktuelle Version für GNU/Linux (auch in Binärform) heruntergeladen werden. 
+</li>
+	<li>libglew-dev</li>
+	<li>zlib-dev</li>
+	<li>libpng-dev</li>
+	<li>libjpeg-dev</li>
+	<li>libxi-dev</li>
+	<li>für einige Aufgaben auch libeigen3-dev</li>
+</ul>
+<p>
+Es kann sein, dass die Pakete in anderen GNU/Linux-Distributionen anders heißen. 
+Die obigen Namen sollten für Redhat (und Derivate wie Fedora) und Debian 
+(und Derivate wie Ubuntu) stimmen.
+</p>
+
+Im Ordner &quot;framework&quot; befindet sich die Datei cgvsource.zip, in dem die Quelldateien des Frameworks zu finden sind. Folgendes ist zu tun:
+<ol>
+    <li>
+        Das ZIP, das den Ordner &quot;cgv&quot; enthält, auf der Wurzelebene des Aufgabenpaketes entpacken. Die Ordnerstruktur ist dann:
+<pre>
+..
+cgv
+exercise1
+framework</pre>
+    </li>
+    <li> Den kompletten Ordner &quot;framework&quot; mit den Windows-DLLs entfernen </li>
+    <li>
+        Auf der Wurzelebene des Aufgabenpaketes einen neuen Ordner "cgv-build" anlegen. Die Ordnerstruktur ist dann:
+<pre>
+..
+cgv
+cgv-build
+exercise1</pre>
+    </li>
+    <li>In den Ordner &quot;cgv-build&quot; wechseln</li>
+    <li>
+        CMake zum Generieren von Makefiles mit folgendem Kommando aufrufen:
+        <pre class="command">cmake -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../ ../cgv</pre>
+        Das Kommando sagt folgendes:
+        <ol>
+            <li>Erstelle das Framework als Shared-Libraries</li> 
+            <li>... im Release-Modus</li>
+            <li>Installiere es in den Ordner &quot;..&quot;. Es wird automatisch ein Unterordner &quot;framework&quot; angelegt</li>
+            <li>Die CMake-Dateien befinden sich im relativen Ordner &quot;../cgv&quot;</li>
+        </ol>
+    </li>
+    <li>
+        Hoffen, dass CMake fehlerfrei durchläuft. Das ist der Fall, wenn die letzten Zeilen so aussehen:
+<pre>
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/BENUTZER/PFAD/ZU/cgv-build</pre>
+    </li>
+    <li>
+        Jetzt müssten Makefiles vorhanden sein, die nun kompiliert werden können mittels
+        <pre class="command">make</pre>
+        Falls das Kompilieren parallel erfolgen soll (was manchmal Fehler erzeugt), dann z.B. mittels
+        <pre>make -j8</pre>
+    </li>
+    <li>
+        Falls es keine Fehler gab nun das Framework lokal installieren (es wird nichts in die Systempfade kopiert):
+        <pre class="command">make install</pre>
+        Nun müsste auf der Wurzelebene der Aufgabe wieder ein Ordner "framework" entstanden sein, in dem alle Binärdateien liegen.
+    </li>
+    <li>Der Ordner &quot;cgv-build&quot; kann nun gelöscht werden.</li>
+</ol>
+
+
+
+<h2>Kompilieren einer Aufgabe</h2>
+<p>
+Aus den Aufgaben-Paketen muss jeweils der exercise-Ordner auf eine gemeinsame
+Ebene mit dem framework-Ordner kopiert werden. Um eine Aufgabe zu starten sind
+folgende Befehle (relativ vom entsprechenden exercise-Ordner) notwendig:
+<pre class="command">
+cd build/cmake
+cmake .
+make
+</pre>
+Hat das geklappt, dann befindet sich in diesem Ordner nun eine Datei mit Namen launch-exerciseX.sh
+(mit &quot;X&quot; der Nummer der Aufgabe). Eventuell muss das Skript ausführbar gemacht werden. Das kann mit dem Befehl
+<pre class="command">chmmod +x launch-exerciseX.sh</pre>
+gemacht werden.
+Sollte das Kompilieren nicht funktionieren, dann bitte eine Mail an joachim.staib@tu-dresden.de
+</p>
+
+</body>
+</html>
